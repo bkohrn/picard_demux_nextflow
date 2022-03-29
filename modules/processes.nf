@@ -64,6 +64,7 @@ process extract_barcodes {
     path "checkIlluminaDirectory_good"
     path "*"
     path barcode_file
+    val lane
 
     output:
     path "${params.out_prefix}_picardExtractBarcodes/*", emit: barcodes_dir
@@ -77,7 +78,7 @@ process extract_barcodes {
 
 process basecalls_to_fastq {
     container "${params.container__picardtools}"
-    publishDir "${params.out_prefix}/", 
+    publishDir "${params.out_prefix}/L${lane}", 
         mode: "copy", 
         overwrite: true, 
         pattern: "fastq/*"
@@ -88,9 +89,10 @@ process basecalls_to_fastq {
     path multiplex_params
     path "Barcodes_dir/*"
     path dirs_to_make
+    val lane
     
     output:
-    path "fastq/*"
+    path "fastq/*", emit:out_fastqs
 
     script:
     template 'basecalls_to_fastq.sh'
@@ -98,10 +100,10 @@ process basecalls_to_fastq {
 
 process basecalls_to_sam {
     container "${params.container__picardtools}"
-    publishDir "${params.out_prefix}", 
+    publishDir "${params.out_prefix}/L${lane}", 
         mode: "copy", 
         overwrite: true, 
-        pattern: "sam/*"
+        pattern: "sam/*", emit:out_sams
 
     input:
     path "checkIlluminaDirectory_good"
@@ -109,10 +111,31 @@ process basecalls_to_sam {
     path library_params
     path "Barcodes_dir/*"
     path dirs_to_make
-    
+    val lane
+
     output:
     path "sam/*"
 
     script:
     template 'basecalls_to_sam.sh'
 }
+
+// process merge_fastqs {
+//     container "${params.container__base}"
+//     // publishDir "${params.out_prefix}/", 
+//     //     mode: "copy", 
+//     //     overwrite: true, 
+//     //     pattern: "fastq/*"
+
+//     input:
+//     val(inName)
+//     path(inDir)
+
+    
+//     output:
+//     path "fastq/*", emit:out_fastqs
+
+//     script:
+//     template 'merge_fastqs.sh'
+
+// }

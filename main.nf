@@ -19,8 +19,11 @@ params.ignore_unexpected_barcodes = "true"
 params.seq_center = false
 params.mem_amount = 8
 params.mem_type = "G"
+params.makeFastq = false
+params.makeSam = false
 
 // Set the containers to use for each component
+params.container__base = "quay.io/biocontainers/snakemake:6.10.0--hdfd78af_0"
 params.container__python = "quay.io/fhcrc-microbiome/python-pandas:0fd1e29"
 params.container__picardtools = "quay.io/biocontainers/picard:2.20.8--0"
 
@@ -31,6 +34,7 @@ include {
     extract_barcodes;
     basecalls_to_fastq;
     basecalls_to_sam;
+    merge_fastqs
 } from './modules/processes'
 
 // Function which prints help message text
@@ -69,7 +73,7 @@ workflow {
     check_directory (
         basecalls_dir
     )
-     log.info"""directory checked""".stripIndent()
+    log.info"""directory checked""".stripIndent()
     // Make the inputs
     make_inputs (
         // Sample sheet
@@ -78,7 +82,14 @@ workflow {
         // Also wait for the check_directory process to finish (successfully)
         check_directory.out.out_good
     )
-
+    println"${params.lane}"
+    // Setup lanes channel
+    lanesToRun = Channel
+        .from(params.lane)
+        .splitCsv()
+        .flatten()
+        .view()
+    
     // Extract the barcodes
     extract_barcodes(
         // Also wait for the check_directory process to finish (successfully)
@@ -86,28 +97,57 @@ workflow {
         // Include all of the files from the basecalls directory
         basecalls_dir,
         // Pipe in the barcode file
-        make_inputs.out.out_eib
+        make_inputs.out.out_eib,
+        lanesToRun
     )
+    if (params.makeFastq ) {
+        // convert to fastq
+        basecalls_to_fastq(
+            // Also wait for the check_directory process to finish (successfully)
+            check_directory.out.out_good,
+            // Include all of the files from the basecalls directory
+            basecalls_dir,
+            make_inputs.out.out_btf,
+            extract_barcodes.out.barcodes_dir,
+            make_inputs.out.out_dirsToMake,
+            lanesToRun
+        )
 
-    // convert to fastq
-    basecalls_to_fastq(
-        // Also wait for the check_directory process to finish (successfully)
-        check_directory.out.out_good,
-        // Include all of the files from the basecalls directory
-        basecalls_dir,
-        make_inputs.out.out_btf,
-        extract_barcodes.out.barcodes_dir,
-        make_inputs.out.out_dirsToMake
-    )
+        // dirPairs = basecalls_to_fastq.out.out_fastqs
+        //     .toList()
+        //     .transpose()
+        //     .view()
+        
+        // dirNames = dirPairs.map {
+        //     it -> it[0].toString().split('/')[-1]
+        // }
+        // merge_fastqs(
+        //     dirNames,
+        //     dirPairs
+        // )
+    }
 
-    // convert to sam
-    basecalls_to_sam(
-        // Also wait for the check_directory process to finish (successfully)
-        check_directory.out.out_good,
-        // Include all of the files from the basecalls directory
-        basecalls_dir,
-        make_inputs.out.out_bts,
-        extract_barcodes.out.barcodes_dir,
-        make_inputs.out.out_dirsToMake
-    )
+    if (params.make_sam) {
+        // convert to sam
+        basecalls_to_sam(
+            // Also wait for the check_directory process to finish (successfully)
+            check_directory.out.out_good,
+            // Include all of the files from the basecalls directory
+            basecalls_dir,
+            make_inputs.out.out_bts,
+            extract_barcodes.out.barcodes_dir,
+            make_inputs.out.out_dirsToMake,
+            lanesToRun
+        )
+    // dirPairs = basecalls_to_fastq.out.out_fastqs.toList().transpose().view()
+        
+    //     dirNames = dirPairs.map {
+    //         it -> it[0].toString().split('/')[-1]
+    //     }
+    //     merge_bams(
+    //         dirNames,
+    //         dirPairs
+    //     )
+    }
+
 }
