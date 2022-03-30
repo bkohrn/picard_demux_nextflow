@@ -20,6 +20,10 @@ process check_directory {
     container "${params.container__picardtools}"
     publishDir "${params.out_prefix}/logs/", mode: "copy", overwrite: true, pattern: "check_illumina_directory.log"
 
+    cpus params.num_processors
+    memory "${params.mem_amount} ${params.mem_type}B"
+
+
     input:
     path "*"
 
@@ -60,6 +64,10 @@ process make_inputs {
 process extract_barcodes {
     container "${params.container__picardtools}"
 
+    cpus params.num_processors
+    memory "${params.mem_amount} ${params.mem_type}B"
+
+
     input:
     path "checkIlluminaDirectory_good"
     path "*"
@@ -82,6 +90,9 @@ process basecalls_to_fastq {
         mode: "copy", 
         overwrite: true, 
         pattern: "fastq/*"
+    
+    cpus params.num_processors
+    memory "${params.mem_amount} ${params.mem_type}B"
 
     input:
     path "checkIlluminaDirectory_good"
@@ -104,6 +115,10 @@ process basecalls_to_sam {
         mode: "copy", 
         overwrite: true, 
         pattern: "sam/*", emit:out_sams
+    
+    cpus params.num_processors
+    memory "${params.mem_amount} ${params.mem_type}B"
+
 
     input:
     path "checkIlluminaDirectory_good"
