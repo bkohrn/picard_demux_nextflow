@@ -145,8 +145,7 @@ process merge_fastqs {
         pattern: "merged/fastq/*"
 
     input:
-    tuple val(inName),
-        path(inDirs)
+    tuple path(inDirs)
 
     
     output:

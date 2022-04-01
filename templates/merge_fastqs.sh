@@ -2,8 +2,8 @@
 
 set -x
 
-echo ${inDir[0].toString().split('/')[-1]}
-echo ${inDir}
+echo ${inDirs[0].toString().split('/')[-1]}
+echo ${inDirs}
 
 mkdir -p merged/fastq/${inName}
 
