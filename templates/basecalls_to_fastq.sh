@@ -22,7 +22,9 @@ COMPRESS_OUTPUTS=${params.compress_outputs} \\
 IGNORE_UNEXPECTED_BARCODES=${params.ignore_unexpected_barcodes} \\
 NUM_PROCESSORS=${task.cpus}
 
-for dirIter in \$(ls -d fastq/*/); do 
+cd fastq
+for dirIter in \$(ls -d */); do 
     mv \${dirIter} \${dirIter/\\//}.L${lane}
 done
+cd ..
 

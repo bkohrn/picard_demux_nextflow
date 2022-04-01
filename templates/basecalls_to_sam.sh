@@ -18,7 +18,8 @@ NUM_PROCESSORS=${params.num_processors} \\
 IGNORE_UNEXPECTED_BARCODES=${params.ignore_unexpected_barcodes} \\
 NUM_PROCESSORS=${task.cpus}
 
+cd sam
 for dirIter in \$(ls -d sam/*/); do 
     mv \${dirIter} \${dirIter/\\//}.L${lane}
 done
-
+cd ..
