@@ -102,50 +102,43 @@ workflow {
     )
     if (params.makeFastq ) {
         // convert to fastq
-        check_directory.out
+        basecalls_to_fastq(
+            // Also wait for the check_directory process to finish (successfully)
+            check_directory.out
                 .out_good
                 .combine(basecalls_dir)
                 .combine(make_inputs.out.out_btf)
                 .combine(extract_barcodes.out.barcodes_dir)
                 .combine(make_inputs.out.out_dirsToMake)
-                .view()
-        // basecalls_to_fastq(
-        //     // Also wait for the check_directory process to finish (successfully)
-        //     check_directory.out
-        //         .out_good
-        //         .combine(basecalls_dir)
-        //         .combine(make_inputs.out.out_btf)
-        //         .combine(extract_barcodes.out.barcodes_dir)
-        //         .combine(make_inputs.out.out_dirsToMake)
-        // )
+        )
 
-        // dirPairsFastq = basecalls_to_fastq.out.out_fastqs
-        //     .toList()
-        //     .transpose()
-        //     .view()
+        dirPairsFastq = basecalls_to_fastq.out.out_fastqs
+            .toList()
+            .transpose()
+            .view()
         
-        // dirNamesFastq = dirPairs.map {
-        //     it -> [
-        //         it[0].toString().split('/')[-1],
-        //         it
-        //     ]
-        // }
-        // merge_fastqs(
-        //     dirPairsFastq
-        // )
+        dirNamesFastq = dirPairs.map {
+            it -> [
+                it[0].toString().split('/')[-1],
+                it
+            ]
+        }
+        merge_fastqs(
+            dirPairsFastq
+        )
     }
 
     if (params.makeSam) {
-        // // convert to sam
-        // basecalls_to_sam(
-        //         check_directory
-        //         .out
-        //         .out_good
-        //         .combine(basecalls_dir)
-        //         .combine(make_inputs.out.out_bts)
-        //         .combine(extract_barcodes.out.barcodes_dir)
-        //         .combine(make_inputs.out.out_dirsToMake)
-        // )
+        // convert to sam
+        basecalls_to_sam(
+                check_directory
+                .out
+                .out_good
+                .combine(basecalls_dir)
+                .combine(make_inputs.out.out_bts)
+                .combine(extract_barcodes.out.barcodes_dir)
+                .combine(make_inputs.out.out_dirsToMake)
+        )
     // dirPairs = basecalls_to_fastq.out.out_fastqs.toList().transpose().view()
         
     //     dirNames = dirPairs.map {

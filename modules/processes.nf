@@ -100,10 +100,8 @@ process basecalls_to_fastq {
     tuple path("checkIlluminaDirectory_good"),
         path("*"),
         path(multiplex_params),
-        tuple(
-            val(lane),
-            path("Barcodes_dir/*")
-        ),
+        val(lane),
+        path("Barcodes_dir/*"),
         path(dirs_to_make)
     
     output:
@@ -128,10 +126,8 @@ process basecalls_to_sam {
         tuple path("checkIlluminaDirectory_good"),
         path("*"),
         path(library_params),
-        tuple(
-            val(lane),
-            path("Barcodes_dir/*")
-        ),
+        val(lane),
+        path("Barcodes_dir/*"),
         path(dirs_to_make)
 
     output:
