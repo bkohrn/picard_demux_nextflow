@@ -15,8 +15,7 @@ LIBRARY_PARAMS=${library_params} \\
 RUN_BARCODE=${params.run_barcode} \\
 SEQUENCING_CENTER=${params.seq_center} \\
 NUM_PROCESSORS=${params.num_processors} \\
-IGNORE_UNEXPECTED_BARCODES=${params.ignore_unexpected_barcodes} \\
-NUM_PROCESSORS=${task.cpus}
+IGNORE_UNEXPECTED_BARCODES=${params.ignore_unexpected_barcodes} 
 
 cd sam
 for dirIter in \$(ls -d sam/*/); do 
