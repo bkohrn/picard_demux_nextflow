@@ -9,4 +9,5 @@ echo ${inDirs}
 ls -alh
 
 mkdir -p merged/fastq/\${inName}
-exit 1
+cat \${inName}*/\${inName}.1.fastq.gz > merged/fastq/\${inName}/\${inName}.1.fastq.gz
+cat \${inName}*/\${inName}.2.fastq.gz > merged/fastq/\${inName}/\${inName}.2.fastq.gz
