@@ -18,5 +18,7 @@ NUM_PROCESSORS=${params.num_processors} \\
 IGNORE_UNEXPECTED_BARCODES=${params.ignore_unexpected_barcodes} \\
 NUM_PROCESSORS=${task.cpus}
 
-mkdir L${lane}
-mv sam L${lane}/sam
+for dirIter in \$(ls -d sam/*/); do 
+    mv \${dirIter} \${dirIter}.L${lane}
+done
+

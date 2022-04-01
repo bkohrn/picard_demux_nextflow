@@ -91,7 +91,7 @@ process basecalls_to_fastq {
     publishDir "${params.out_prefix}", 
         mode: "copy", 
         overwrite: true, 
-        pattern: "L${lane}/fastq/*"
+        pattern: "fastq/*"
     
     cpus params.num_processors
     memory "${params.mem_amount} ${params.mem_type}B"
@@ -105,7 +105,7 @@ process basecalls_to_fastq {
         path(dirs_to_make)
     
     output:
-    path "L${lane}/fastq/*", emit:out_fastqs
+    path "fastq/*", emit:out_fastqs
 
     script:
     template 'basecalls_to_fastq.sh'
@@ -116,7 +116,7 @@ process basecalls_to_sam {
     publishDir "${params.out_prefix}", 
         mode: "copy", 
         overwrite: true, 
-        pattern: "L${lane}/sam/*", emit:out_sams
+        pattern: "sam/*", emit:out_sams
     
     cpus params.num_processors
     memory "${params.mem_amount} ${params.mem_type}B"
@@ -131,7 +131,7 @@ process basecalls_to_sam {
         path(dirs_to_make)
 
     output:
-    path "L${lane}/sam/*"
+    path "sam/*"
 
     script:
     template 'basecalls_to_sam.sh'
