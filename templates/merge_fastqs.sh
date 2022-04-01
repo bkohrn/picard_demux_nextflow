@@ -8,5 +8,4 @@ echo ${inDirs}
 ls -alh
 
 mkdir -p merged/fastq/\${inName}
-cat 
-
+exit 1
