@@ -116,8 +116,7 @@ workflow {
             .toList()
             .transpose()
             .view()
-            
-        }
+        
         merge_fastqs(
             dirPairsFastq
         )
