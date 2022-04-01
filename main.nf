@@ -129,7 +129,7 @@ workflow {
         )
     }
 
-    if (params.make_sam) {
+    if (params.makeSam) {
         // convert to sam
         basecalls_to_sam(
             // Also wait for the check_directory process to finish (successfully)
