@@ -86,10 +86,10 @@ process extract_barcodes {
 
 process basecalls_to_fastq {
     container "${params.container__picardtools}"
-    publishDir "${params.out_prefix}/L${lane}", 
+    publishDir "${params.out_prefix}", 
         mode: "copy", 
         overwrite: true, 
-        pattern: "fastq/*"
+        pattern: "L${lane}/fastq/*"
     
     cpus params.num_processors
     memory "${params.mem_amount} ${params.mem_type}B"
@@ -103,7 +103,7 @@ process basecalls_to_fastq {
     val lane
     
     output:
-    path "fastq/*", emit:out_fastqs
+    path "L${lane}/fastq/*", emit:out_fastqs
 
     script:
     template 'basecalls_to_fastq.sh'
@@ -111,10 +111,10 @@ process basecalls_to_fastq {
 
 process basecalls_to_sam {
     container "${params.container__picardtools}"
-    publishDir "${params.out_prefix}/L${lane}", 
+    publishDir "${params.out_prefix}", 
         mode: "copy", 
         overwrite: true, 
-        pattern: "sam/*", emit:out_sams
+        pattern: "L${lane}/sam/*", emit:out_sams
     
     cpus params.num_processors
     memory "${params.mem_amount} ${params.mem_type}B"
@@ -129,28 +129,28 @@ process basecalls_to_sam {
     val lane
 
     output:
-    path "sam/*"
+    path "L${lane}/sam/*"
 
     script:
     template 'basecalls_to_sam.sh'
 }
 
-// process merge_fastqs {
-//     container "${params.container__base}"
-//     // publishDir "${params.out_prefix}/", 
-//     //     mode: "copy", 
-//     //     overwrite: true, 
-//     //     pattern: "fastq/*"
+process merge_fastqs {
+    container "${params.container__base}"
+    publishDir "${params.out_prefix}/", 
+        mode: "copy", 
+        overwrite: true, 
+        pattern: "merged/fastq/*"
 
-//     input:
-//     val(inName)
-//     path(inDir)
+    input:
+    tuple val(inName),
+        path(inDirs)
 
     
-//     output:
-//     path "fastq/*", emit:out_fastqs
+    output:
+    path "merged/fastq/*", emit:out_fastqs
 
-//     script:
-//     template 'merge_fastqs.sh'
+    script:
+    template 'merge_fastqs.sh'
 
-// }
+}

@@ -16,3 +16,6 @@ RUN_BARCODE=${params.run_barcode} \\
 SEQUENCING_CENTER=${params.seq_center} \\
 NUM_PROCESSORS=${params.num_processors} \\
 IGNORE_UNEXPECTED_BARCODES=${params.ignore_unexpected_barcodes}
+
+mkdir L${lane}
+mv sam L${lane}/sam

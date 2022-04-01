@@ -5,5 +5,6 @@ set -x
 
 echo ${inName}
 echo ${inDir}
-ls
+
+mkdir -p merged/fastq/${inName}
 

@@ -18,3 +18,7 @@ FLOWCELL_BARCODE=${params.flowcell_barcode} \\
 NUM_PROCESSORS=${params.num_processors} \\
 COMPRESS_OUTPUTS=${params.compress_outputs} \\
 IGNORE_UNEXPECTED_BARCODES=${params.ignore_unexpected_barcodes}
+
+mkdir L${lane}
+mv fastq L${lane}/fastq
+
