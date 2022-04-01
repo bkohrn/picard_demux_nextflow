@@ -88,7 +88,7 @@ workflow {
         .from(params.lane)
         .splitCsv()
         .flatten()
-        .view()
+    lanesToRun.view()
     
     // Extract the barcodes
     extract_barcodes(
