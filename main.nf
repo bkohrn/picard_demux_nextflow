@@ -117,7 +117,7 @@ workflow {
             .transpose()
             .view()
         
-        dirNamesFastq = dirPairs.map {
+        dirNamesFastq = dirPairsFastq.map {
             it -> [
                 it[0].toString().split('/')[-1],
                 it
