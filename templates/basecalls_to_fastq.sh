@@ -6,6 +6,8 @@ for dirIter in \$(cat ${dirs_to_make}); do
     mkdir -p \${dirIter}
 done
 
+echo ${lane}
+
 picard -Xmx${params.mem_amount}${params.mem_type} IlluminaBasecallsToFastq \\
 BASECALLS_DIR=\$PWD/${params.in_dir}/Data/Intensities/BaseCalls/ \\
 BARCODES_DIR=\$PWD/Barcodes_dir/ \\

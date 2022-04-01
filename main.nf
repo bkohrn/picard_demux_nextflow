@@ -109,8 +109,7 @@ workflow {
             basecalls_dir,
             make_inputs.out.out_btf,
             extract_barcodes.out.barcodes_dir,
-            make_inputs.out.out_dirsToMake,
-            lanesToRun
+            make_inputs.out.out_dirsToMake
         )
 
         dirPairs = basecalls_to_fastq.out.out_fastqs
@@ -139,7 +138,6 @@ workflow {
             make_inputs.out.out_bts,
             extract_barcodes.out.barcodes_dir,
             make_inputs.out.out_dirsToMake,
-            lanesToRun
         )
     // dirPairs = basecalls_to_fastq.out.out_fastqs.toList().transpose().view()
         

@@ -75,7 +75,9 @@ process extract_barcodes {
     val lane
 
     output:
-    path "${params.out_prefix}_picardExtractBarcodes/*", emit: barcodes_dir
+    tuple val(lane),
+        path("${params.out_prefix}_picardExtractBarcodes/*"), 
+        emit: barcodes_dir
     path "${params.out_prefix}_barcode_metrics.txt", emit: barcode_metrics
 
     script:
@@ -98,9 +100,9 @@ process basecalls_to_fastq {
     path "checkIlluminaDirectory_good"
     path "*"
     path multiplex_params
-    path "Barcodes_dir/*"
-    path dirs_to_make
-    val lane
+    tuple path("Barcodes_dir/*"),
+        val(lane)
+    path(dirs_to_make)
     
     output:
     path "L${lane}/fastq/*", emit:out_fastqs
@@ -124,9 +126,9 @@ process basecalls_to_sam {
     path "checkIlluminaDirectory_good"
     path "*"
     path library_params
-    path "Barcodes_dir/*"
+    tuple path("Barcodes_dir/*"),
+        val(lane)
     path dirs_to_make
-    val lane
 
     output:
     path "L${lane}/sam/*"

@@ -8,6 +8,8 @@ mkdir \$OUTDIR
 
 echo \$(picard ExtractIlluminaBarcodes --version)
 
+echo ${lane}
+
 picard -Xmx${params.mem_amount}${params.mem_type} \\
     ExtractIlluminaBarcodes \\
     BASECALLS_DIR=\$PWD/${params.in_dir}/Data/Intensities/BaseCalls/ \\
