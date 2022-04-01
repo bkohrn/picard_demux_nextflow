@@ -1,5 +1,6 @@
 #!/bin/bash
-
+set -e
+set -o pipefail
 set -x
 
 for dirIter in \$(cat ${dirs_to_make}); do

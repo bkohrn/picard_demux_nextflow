@@ -1,5 +1,6 @@
 #!/bin/bash
-
+set -e
+set -o pipefail
 set -x
 {
 picard -Xmx${params.mem_amount}${params.mem_type} CheckIlluminaDirectory \\

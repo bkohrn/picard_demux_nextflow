@@ -1,5 +1,6 @@
 #!/bin/bash
-
+set -e
+set -o pipefail
 set -x
 
 inName=${inDirs[0].toString().split('/')[-1]}

@@ -1,5 +1,6 @@
 #!/bin/bash
-
+set -e
+set -o pipefail
 set -x
 {
 make_picard_demux_files.py \\
