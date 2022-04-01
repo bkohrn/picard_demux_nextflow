@@ -95,7 +95,7 @@ workflow {
         // Also wait for the check_directory process to finish (successfully)
         check_directory
             .out
-            .out_good,
+            .out_good
             .combine(basecalls_dir)
             .combine(make_inputs.out.out_eib)
             .combine(lanesToRun)
@@ -105,7 +105,7 @@ workflow {
         basecalls_to_fastq(
             // Also wait for the check_directory process to finish (successfully)
             check_directory.out
-                .out_good,
+                .out_good
                 .combine(basecalls_dir)
                 .combine(make_inputs.out.out_btf)
                 .combine(extract_barcodes.out.barcodes_dir)
@@ -131,8 +131,9 @@ workflow {
     if (params.makeSam) {
         // convert to sam
         basecalls_to_sam(
-                check_directory.out
-                .out_good,
+                check_directory
+                .out
+                .out_good
                 .combine(basecalls_dir)
                 .combine(make_inputs.out.out_bts)
                 .combine(extract_barcodes.out.barcodes_dir)
