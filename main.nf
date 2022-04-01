@@ -116,15 +116,10 @@ workflow {
             .toList()
             .transpose()
             .view()
-        
-        dirNamesFastq = dirPairsFastq.map {
-            it -> [
-                it[0].toString().split('/')[-1],
-                it
-            ]
+            
         }
         merge_fastqs(
-            dirNamesFastq
+            dirPairsFastq
         )
     }
 
