@@ -112,9 +112,10 @@ workflow {
                 .combine(make_inputs.out.out_dirsToMake)
         )
 
-        // dirPairsFastq = basecalls_to_fastq.out.out_fastqs
-        //     .toList()
-        //     .transpose()
+        dirPairsFastq = basecalls_to_fastq.out.out_fastqs
+            .toList()
+            .transpose()
+            .view()
         
         // merge_fastqs(
         //     dirPairsFastq
