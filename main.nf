@@ -13,7 +13,7 @@ params.flowcell_barcode = false
 params.run_barcode = false
 params.lane = false
 params.num_lanes = 1
-params.num_processors = false
+params.num_processors = 1
 params.compress_outputs = "true"
 params.ignore_unexpected_barcodes = "true"
 params.seq_center = false
@@ -113,18 +113,20 @@ workflow {
             lanesToRun
         )
 
-        // dirPairs = basecalls_to_fastq.out.out_fastqs
-        //     .toList()
-        //     .transpose()
-        //     .view()
+        dirPairs = basecalls_to_fastq.out.out_fastqs
+            .toList()
+            .transpose()
+            .view()
         
-        // dirNames = dirPairs.map {
-        //     it -> it[0].toString().split('/')[-1]
-        // }
-        // merge_fastqs(
-        //     dirNames,
-        //     dirPairs
-        // )
+        dirNames = dirPairs.map {
+            it -> [
+                it[0].toString().split('/')[-1],
+                it
+            ]
+        }
+        merge_fastqs(
+            dirPairs
+        )
     }
 
     if (params.make_sam) {
