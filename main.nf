@@ -124,7 +124,7 @@ workflow {
             ]
         }
         merge_fastqs(
-            dirPairsFastq
+            dirNamesFastq
         )
     }
 
