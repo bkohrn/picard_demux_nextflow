@@ -15,7 +15,8 @@ LIBRARY_PARAMS=${library_params} \\
 RUN_BARCODE=${params.run_barcode} \\
 SEQUENCING_CENTER=${params.seq_center} \\
 NUM_PROCESSORS=${params.num_processors} \\
-IGNORE_UNEXPECTED_BARCODES=${params.ignore_unexpected_barcodes}
+IGNORE_UNEXPECTED_BARCODES=${params.ignore_unexpected_barcodes} \\
+NUM_PROCESSORS=${task.cores}
 
 mkdir L${lane}
 mv sam L${lane}/sam
