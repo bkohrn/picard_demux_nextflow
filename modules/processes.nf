@@ -69,10 +69,10 @@ process extract_barcodes {
 
 
     input:
-    path "checkIlluminaDirectory_good"
-    path "*"
-    path barcode_file
-    val lane
+    tuple path("checkIlluminaDirectory_good"),
+        path("*"),
+        path(barcode_file),
+        val(lane)
 
     output:
     tuple val(lane),
@@ -97,12 +97,14 @@ process basecalls_to_fastq {
     memory "${params.mem_amount} ${params.mem_type}B"
 
     input:
-    path "checkIlluminaDirectory_good"
-    path "*"
-    path multiplex_params
-    tuple path("Barcodes_dir/*"),
-        val(lane)
-    path(dirs_to_make)
+    tuple path("checkIlluminaDirectory_good"),
+        path("*"),
+        path(multiplex_params),
+        tuple(
+            val(lane),
+            path("Barcodes_dir/*")
+        ),
+        path(dirs_to_make)
     
     output:
     path "L${lane}/fastq/*", emit:out_fastqs
@@ -123,12 +125,14 @@ process basecalls_to_sam {
 
 
     input:
-    path "checkIlluminaDirectory_good"
-    path "*"
-    path library_params
-    tuple path("Barcodes_dir/*"),
-        val(lane)
-    path dirs_to_make
+        tuple path("checkIlluminaDirectory_good"),
+        path("*"),
+        path(library_params),
+        tuple(
+            val(lane),
+            path("Barcodes_dir/*")
+        ),
+        path(dirs_to_make)
 
     output:
     path "L${lane}/sam/*"

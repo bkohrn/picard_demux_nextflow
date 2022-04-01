@@ -93,51 +93,50 @@ workflow {
     // Extract the barcodes
     extract_barcodes(
         // Also wait for the check_directory process to finish (successfully)
-        check_directory.out.out_good,
-        // Include all of the files from the basecalls directory
-        basecalls_dir,
-        // Pipe in the barcode file
-        make_inputs.out.out_eib,
-        lanesToRun
+        check_directory
+            .out
+            .out_good,
+            .combine(basecalls_dir)
+            .combine(make_inputs.out.out_eib)
+            .combine(lanesToRun)
     )
     if (params.makeFastq ) {
         // convert to fastq
         basecalls_to_fastq(
             // Also wait for the check_directory process to finish (successfully)
-            check_directory.out.out_good,
-            // Include all of the files from the basecalls directory
-            basecalls_dir,
-            make_inputs.out.out_btf,
-            extract_barcodes.out.barcodes_dir,
-            make_inputs.out.out_dirsToMake
+            check_directory.out
+                .out_good,
+                .combine(basecalls_dir)
+                .combine(make_inputs.out.out_btf)
+                .combine(extract_barcodes.out.barcodes_dir)
+                .combine(make_inputs.out.out_dirsToMake)
         )
 
-        dirPairs = basecalls_to_fastq.out.out_fastqs
+        dirPairsFastq = basecalls_to_fastq.out.out_fastqs
             .toList()
             .transpose()
             .view()
         
-        dirNames = dirPairs.map {
+        dirNamesFastq = dirPairs.map {
             it -> [
                 it[0].toString().split('/')[-1],
                 it
             ]
         }
         merge_fastqs(
-            dirPairs
+            dirPairsFastq
         )
     }
 
     if (params.makeSam) {
         // convert to sam
         basecalls_to_sam(
-            // Also wait for the check_directory process to finish (successfully)
-            check_directory.out.out_good,
-            // Include all of the files from the basecalls directory
-            basecalls_dir,
-            make_inputs.out.out_bts,
-            extract_barcodes.out.barcodes_dir,
-            make_inputs.out.out_dirsToMake,
+                check_directory.out
+                .out_good,
+                .combine(basecalls_dir)
+                .combine(make_inputs.out.out_bts)
+                .combine(extract_barcodes.out.barcodes_dir)
+                .combine(make_inputs.out.out_dirsToMake)
         )
     // dirPairs = basecalls_to_fastq.out.out_fastqs.toList().transpose().view()
         
