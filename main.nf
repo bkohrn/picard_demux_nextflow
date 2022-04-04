@@ -85,7 +85,7 @@ workflow {
     println"${params.lane}"
     // Setup lanes channel
     lanesToRun = Channel
-        .from(params.lane)
+        .from(params.lane.toString())
         .splitCsv()
         .flatten()
     lanesToRun.view()
