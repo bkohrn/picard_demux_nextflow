@@ -19,5 +19,6 @@ picard -Xmx${params.mem_amount}${params.mem_type} \\
     LANE=${lane} \\
     OUTPUT_DIR=\$OUTDIR  \\
     METRICS_FILE=${params.out_prefix}_barcode_metrics.txt \\
-    NUM_PROCESSORS=${task.cpus}
+    NUM_PROCESSORS=${task.cpus} \\
+    TMP_DIR=./picard_temp_dir
 } 2>&1 | tee -a extract_barcodes.log

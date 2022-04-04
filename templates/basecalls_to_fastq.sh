@@ -20,7 +20,8 @@ RUN_BARCODE=${params.run_barcode} \\
 FLOWCELL_BARCODE=${params.flowcell_barcode} \\
 NUM_PROCESSORS=${params.num_processors} \\
 COMPRESS_OUTPUTS=${params.compress_outputs} \\
-IGNORE_UNEXPECTED_BARCODES=${params.ignore_unexpected_barcodes} 
+IGNORE_UNEXPECTED_BARCODES=${params.ignore_unexpected_barcodes} \\
+TMP_DIR=./picard_temp_dir
 
 cd fastq
 for dirIter in \$(ls -d */); do 
