@@ -13,7 +13,7 @@ params.flowcell_barcode = false
 params.run_barcode = false
 params.lane = false
 params.num_lanes = 1
-params.num_processors = false
+params.num_processors = 1
 params.compress_outputs = "true"
 params.ignore_unexpected_barcodes = "true"
 params.seq_center = false
@@ -85,59 +85,52 @@ workflow {
     println"${params.lane}"
     // Setup lanes channel
     lanesToRun = Channel
-        .from(params.lane)
+        .from(params.lane.toString())
         .splitCsv()
         .flatten()
-        .view()
+    lanesToRun.view()
     
     // Extract the barcodes
     extract_barcodes(
         // Also wait for the check_directory process to finish (successfully)
-        check_directory.out.out_good,
-        // Include all of the files from the basecalls directory
-        basecalls_dir,
-        // Pipe in the barcode file
-        make_inputs.out.out_eib,
-        lanesToRun
+        check_directory
+            .out
+            .out_good
+            .combine(basecalls_dir)
+            .combine(make_inputs.out.out_eib)
+            .combine(lanesToRun)
     )
     if (params.makeFastq ) {
         // convert to fastq
         basecalls_to_fastq(
             // Also wait for the check_directory process to finish (successfully)
-            check_directory.out.out_good,
-            // Include all of the files from the basecalls directory
-            basecalls_dir,
-            make_inputs.out.out_btf,
-            extract_barcodes.out.barcodes_dir,
-            make_inputs.out.out_dirsToMake,
-            lanesToRun
+            check_directory.out
+                .out_good
+                .combine(basecalls_dir)
+                .combine(make_inputs.out.out_btf)
+                .combine(extract_barcodes.out.barcodes_dir)
+                .combine(make_inputs.out.out_dirsToMake)
         )
 
-        // dirPairs = basecalls_to_fastq.out.out_fastqs
-        //     .toList()
-        //     .transpose()
-        //     .view()
+        dirPairsFastq = basecalls_to_fastq.out.out_fastqs
+            .toList()
+            .transpose()
         
-        // dirNames = dirPairs.map {
-        //     it -> it[0].toString().split('/')[-1]
-        // }
-        // merge_fastqs(
-        //     dirNames,
-        //     dirPairs
-        // )
+        merge_fastqs(
+            dirPairsFastq
+        )
     }
 
-    if (params.make_sam) {
+    if (params.makeSam) {
         // convert to sam
         basecalls_to_sam(
-            // Also wait for the check_directory process to finish (successfully)
-            check_directory.out.out_good,
-            // Include all of the files from the basecalls directory
-            basecalls_dir,
-            make_inputs.out.out_bts,
-            extract_barcodes.out.barcodes_dir,
-            make_inputs.out.out_dirsToMake,
-            lanesToRun
+                check_directory
+                .out
+                .out_good
+                .combine(basecalls_dir)
+                .combine(make_inputs.out.out_bts)
+                .combine(extract_barcodes.out.barcodes_dir)
+                .combine(make_inputs.out.out_dirsToMake)
         )
     // dirPairs = basecalls_to_fastq.out.out_fastqs.toList().transpose().view()
         

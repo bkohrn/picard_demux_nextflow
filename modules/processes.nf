@@ -69,13 +69,15 @@ process extract_barcodes {
 
 
     input:
-    path "checkIlluminaDirectory_good"
-    path "*"
-    path barcode_file
-    val lane
+    tuple path("checkIlluminaDirectory_good"),
+        path("*"),
+        path(barcode_file),
+        val(lane)
 
     output:
-    path "${params.out_prefix}_picardExtractBarcodes/*", emit: barcodes_dir
+    tuple val(lane),
+        path("${params.out_prefix}_picardExtractBarcodes/*"), 
+        emit: barcodes_dir
     path "${params.out_prefix}_barcode_metrics.txt", emit: barcode_metrics
 
     script:
@@ -86,7 +88,7 @@ process extract_barcodes {
 
 process basecalls_to_fastq {
     container "${params.container__picardtools}"
-    publishDir "${params.out_prefix}/L${lane}", 
+    publishDir "${params.out_prefix}", 
         mode: "copy", 
         overwrite: true, 
         pattern: "fastq/*"
@@ -95,12 +97,12 @@ process basecalls_to_fastq {
     memory "${params.mem_amount} ${params.mem_type}B"
 
     input:
-    path "checkIlluminaDirectory_good"
-    path "*"
-    path multiplex_params
-    path "Barcodes_dir/*"
-    path dirs_to_make
-    val lane
+    tuple path("checkIlluminaDirectory_good"),
+        path("*"),
+        path(multiplex_params),
+        val(lane),
+        path("Barcodes_dir/*"),
+        path(dirs_to_make)
     
     output:
     path "fastq/*", emit:out_fastqs
@@ -111,7 +113,7 @@ process basecalls_to_fastq {
 
 process basecalls_to_sam {
     container "${params.container__picardtools}"
-    publishDir "${params.out_prefix}/L${lane}", 
+    publishDir "${params.out_prefix}", 
         mode: "copy", 
         overwrite: true, 
         pattern: "sam/*", emit:out_sams
@@ -121,12 +123,12 @@ process basecalls_to_sam {
 
 
     input:
-    path "checkIlluminaDirectory_good"
-    path "*"
-    path library_params
-    path "Barcodes_dir/*"
-    path dirs_to_make
-    val lane
+        tuple path("checkIlluminaDirectory_good"),
+        path("*"),
+        path(library_params),
+        val(lane),
+        path("Barcodes_dir/*"),
+        path(dirs_to_make)
 
     output:
     path "sam/*"
@@ -135,22 +137,21 @@ process basecalls_to_sam {
     template 'basecalls_to_sam.sh'
 }
 
-// process merge_fastqs {
-//     container "${params.container__base}"
-//     // publishDir "${params.out_prefix}/", 
-//     //     mode: "copy", 
-//     //     overwrite: true, 
-//     //     pattern: "fastq/*"
+process merge_fastqs {
+    container "${params.container__base}"
+    publishDir "${params.out_prefix}/", 
+        mode: "copy", 
+        overwrite: true, 
+        pattern: "merged/fastq/*"
 
-//     input:
-//     val(inName)
-//     path(inDir)
+    input:
+    path(inDirs)
 
     
-//     output:
-//     path "fastq/*", emit:out_fastqs
+    output:
+    path "merged/fastq/*", emit:out_fastqs
 
-//     script:
-//     template 'merge_fastqs.sh'
+    script:
+    template 'merge_fastqs.sh'
 
-// }
+}

@@ -1,5 +1,6 @@
 #!/bin/bash
-
+set -e
+set -o pipefail
 set -x
 
 for dirIter in \$(cat ${dirs_to_make}); do
@@ -15,4 +16,11 @@ LIBRARY_PARAMS=${library_params} \\
 RUN_BARCODE=${params.run_barcode} \\
 SEQUENCING_CENTER=${params.seq_center} \\
 NUM_PROCESSORS=${params.num_processors} \\
-IGNORE_UNEXPECTED_BARCODES=${params.ignore_unexpected_barcodes}
+IGNORE_UNEXPECTED_BARCODES=${params.ignore_unexpected_barcodes} \\
+TMP_DIR=./picard_temp_dir
+
+cd sam
+for dirIter in \$(ls -d sam/*/); do 
+    mv \${dirIter} \${dirIter/\\//}.L${lane}
+done
+cd ..
