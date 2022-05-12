@@ -26,6 +26,7 @@ params.makeSam = false
 params.container__base = "quay.io/biocontainers/snakemake:6.10.0--hdfd78af_0"
 params.container__python = "quay.io/fhcrc-microbiome/python-pandas:0fd1e29"
 params.container__picardtools = "quay.io/biocontainers/picard:2.20.8--0"
+params.container__samtools = "quay.io/biocontainers/samtools:1.15--h3843a85_0"
 
 // Import the processes defined in modules/processes.nf into the main workflow scope
 include {
@@ -34,7 +35,8 @@ include {
     extract_barcodes;
     basecalls_to_fastq;
     basecalls_to_sam;
-    merge_fastqs
+    merge_fastqs;
+    merge_sams;
 } from './modules/processes'
 
 // Function which prints help message text
@@ -82,13 +84,12 @@ workflow {
         // Also wait for the check_directory process to finish (successfully)
         check_directory.out.out_good
     )
-    println"${params.lane}"
+    
     // Setup lanes channel
     lanesToRun = Channel
         .from(params.lane.toString())
         .splitCsv()
         .flatten()
-    lanesToRun.view()
     
     // Extract the barcodes
     extract_barcodes(
@@ -132,15 +133,16 @@ workflow {
                 .combine(extract_barcodes.out.barcodes_dir)
                 .combine(make_inputs.out.out_dirsToMake)
         )
-    // dirPairs = basecalls_to_fastq.out.out_fastqs.toList().transpose().view()
+        dirPairsSam = basecalls_to_sam.out.out_sams
+            .toList()
+            .transpose()
         
-    //     dirNames = dirPairs.map {
-    //         it -> it[0].toString().split('/')[-1]
-    //     }
-    //     merge_bams(
-    //         dirNames,
-    //         dirPairs
-    //     )
+        dirNames = dirPairs.map {
+            it -> it[0].toString().split('/')[-1]
+        }
+        merge_sams(
+            dirPairsSam
+        )
     }
 
 }
