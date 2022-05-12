@@ -131,7 +131,7 @@ process basecalls_to_sam {
         path(dirs_to_make)
 
     output:
-    path "sam/*"
+    path "sam/*", emit: out_sams
 
     script:
     template 'basecalls_to_sam.sh'
@@ -153,5 +153,24 @@ process merge_fastqs {
 
     script:
     template 'merge_fastqs.sh'
+
+}
+
+process merge_sams {
+    container "${params.container__samtools}"
+    publishDir "${params.out_prefix}/", 
+        mode: "copy", 
+        overwrite: true, 
+        pattern: "merged/sam/*"
+
+    input:
+    path(inDirs)
+
+    
+    output:
+    path "merged/sam/*", emit:out_sams
+
+    script:
+    template 'merge_sams.sh'
 
 }

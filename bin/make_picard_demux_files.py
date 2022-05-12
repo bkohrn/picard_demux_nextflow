@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import re
 from argparse import ArgumentParser
 
 def main():
@@ -41,28 +42,33 @@ def main():
     # Open sample sheet
     in_sample_sheet = open(o.input, 'r')
     line = next(in_sample_sheet).strip().strip(',')
+    sample_IDs = []
     while line != "[Data]":
         line = next(in_sample_sheet).strip().strip(',')
     header_line = next(in_sample_sheet).strip().strip(',').split(',')
     for line in in_sample_sheet:
         line_dict = dict(zip(header_line, line.strip().strip(',').split(',')))
-        out_eib.write(f"{line_dict['Sample_Name']}\t"
+        samp_name = re.sub(r'[^\w\d\-_\.]','_',line_dict['Sample_Name'])
+        if samp_name in sample_IDs:
+            raise Exception("ERROR: Duplicate sample names.  Check your 'Sample_Name' column.")
+        sample_IDs.append(samp_name)
+        out_eib.write(f"{samp_name}\t"
                       f"{line_dict['I7_Index_ID']}\t"
                       f"{line_dict['index']}\t"
                       f"{line_dict['index2']}\n")
-        out_btf.write(f"fastq/{line_dict['Sample_Name']}/{line_dict['Sample_Name']}\t"
-                      f"{line_dict['Sample_Name']}\t"
+        out_btf.write(f"fastq/{samp_name}/{samp_name}\t"
+                      f"{samp_name}\t"
                       f"{line_dict['I7_Index_ID']}\t"
                       f"{line_dict['index']}\t"
                       f"{line_dict['index2']}\n")
-        out_bts.write(f"sam/{line_dict['Sample_Name']}/{line_dict['Sample_Name']}_unmapped.bam\t"
-                      f"{line_dict['Sample_Name']}\t"
+        out_bts.write(f"sam/{samp_name}/{samp_name}_unmapped.bam\t"
+                      f"{samp_name}\t"
                       f"{line_dict['I7_Index_ID']}\t"
                       f"{line_dict['index']}\t"
                       f"{line_dict['index2']}\n")
         out_filesToMake.write(
-            f"sam/{line_dict['Sample_Name']}/\n"
-            f"fastq/{line_dict['Sample_Name']}/\n")
+            f"sam/{samp_name}/\n"
+            f"fastq/{samp_name}/\n")
     in_sample_sheet.close()
     out_eib.close()
     out_btf.close()
