@@ -91,6 +91,7 @@ process basecalls_to_fastq {
     publishDir "${params.out_prefix}", 
         mode: "copy", 
         overwrite: true, 
+        enabled: params.save_individual_lanes
         pattern: "fastq/*"
     
     cpus params.num_processors
@@ -116,7 +117,8 @@ process basecalls_to_sam {
     publishDir "${params.out_prefix}", 
         mode: "copy", 
         overwrite: true, 
-        pattern: "sam/*", emit:out_sams
+        enabled: params.save_individual_lanes,
+        pattern: "sam/*"
     
     cpus params.num_processors
     memory "${params.mem_amount} ${params.mem_type}B"
