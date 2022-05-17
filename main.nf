@@ -21,6 +21,8 @@ params.mem_amount = 8
 params.mem_type = "G"
 params.makeFastq = false
 params.makeSam = false
+params.sample_sheet = "${params.in_dir}/SampleSheet.csv"
+params.save_individual_lanes = false
 
 // Set the containers to use for each component
 params.container__base = "quay.io/biocontainers/snakemake:6.10.0--hdfd78af_0"
@@ -80,7 +82,7 @@ workflow {
     make_inputs (
         // Sample sheet
         Channel
-            .fromPath("${params.in_dir}/SampleSheet.csv"),
+            .fromPath(params.sample_sheet),
         // Also wait for the check_directory process to finish (successfully)
         check_directory.out.out_good
     )
