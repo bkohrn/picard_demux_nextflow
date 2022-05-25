@@ -80,6 +80,12 @@ process extract_barcodes {
         emit: barcodes_dir
     path "${params.out_prefix}_barcode_metrics.txt", emit: barcode_metrics
 
+    publishDir "${params.out_prefix}/metrics", 
+        mode: "copy", 
+        overwrite: true, 
+        pattern: "${params.out_prefix}_barcode_metrics.txt",
+        saveAs: {fName -> "${params.out_prefix}.lane_${lane}.demux_${workflow.start}.barcode_metrics.txt"}
+
     script:
     template 'extract_barcodes.sh'
 
