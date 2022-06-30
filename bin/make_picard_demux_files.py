@@ -36,13 +36,13 @@ def main():
     # write unknown line
     out_btf.write(f"fastq/UNKNOWN_INDEX/UNKNOWN_INDEX\t"
                   f"UNKN\t"
-                  f"N\tN\n")
+                  f"N\t\n")
     # Open IlluminaBasecallsToSam file
     out_bts = open(f"{o.prefix}_bts_library_params.txt", 'w')
         # write unknown line
     out_bts.write(f"sam/UNKNOWN_INDEX/UNKNOWN_INDEX_unmapped.bam\t"
                   f"UNKN\t"
-                  f"N\tN\n")
+                  f"N\t\n")
 
     # Header for IlluminaBasecallsToSam
     ## OUTPUT\tSAMPLE_ALIAS\tLIBRARY_NAME\tBARCODE_1\tBARCODE_2\n
