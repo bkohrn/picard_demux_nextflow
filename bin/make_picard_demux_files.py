@@ -48,6 +48,9 @@ def main():
     ## OUTPUT\tSAMPLE_ALIAS\tLIBRARY_NAME\tBARCODE_1\tBARCODE_2\n
     out_bts.write("OUTPUT\tSAMPLE_ALIAS\tLIBRARY_NAME\tBARCODE_1\tBARCODE_2\n")
     out_filesToMake = open(f"{o.prefix}_dirsToMake.txt", 'w')
+    out_filesToMake.write(
+            f"sam/UNKNOWN_INDEX/\n"
+            f"fastq/UNKNOWN_INDEX/\n")
     # Open sample sheet
     in_sample_sheet = open(o.input, 'r')
     line = next(in_sample_sheet).strip().strip(',')
