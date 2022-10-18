@@ -20,6 +20,23 @@ def main():
         type=str,
         help="A prefix for output files",
         required=True)
+    parser.add_argument(
+        '-r',"--read_structure",
+        dest="read_structure",
+        action="store",
+        type=str,
+        help="Read structure expected",
+        default="151T10B10B151T"
+    )
+    parser.add_argument(
+        "--ignore_unknown",
+        dest="unknown",
+        action="store",
+        type=str,
+        help="true/false on whether to ignore unknown reads",
+        choices=["true","false"], 
+        default="false"
+    )
     o = parser.parse_args()
     # make barcode file for picard ExtractIlluminaBarcodes
     # open output files
@@ -34,27 +51,33 @@ def main():
     ## OUTPUT_PREFIX\tlibrary_name\tbarcode_name\tBARCODE_1\tBARCODE_2\n
     out_btf.write("OUTPUT_PREFIX\tlibrary_name\tbarcode_name\tBARCODE_1\tBARCODE_2\n")
     # write unknown line
-    out_btf.write(f"fastq/UNKNOWN_INDEX/UNKNOWN_INDEX\t"
-                  f"UNKN\tUNKN\t"
-                  f"N\tN\n")
+    if not o.unknown:
+        out_btf.write(f"fastq/UNKNOWN_INDEX/UNKNOWN_INDEX\t"
+                    f"UNKN\tUNKN\t"
+                    f"N\tN\n")
     # Open IlluminaBasecallsToSam file
     out_bts = open(f"{o.prefix}_bts_library_params.txt", 'w')
         # write unknown line
-    out_bts.write(f"sam/UNKNOWN_INDEX/UNKNOWN_INDEX_unmapped.bam\t"
-                  f"UNKN\tUNKN\t"
-                  f"N\tN\n")
+    if not o.unknown:
+        out_bts.write(f"sam/UNKNOWN_INDEX/UNKNOWN_INDEX_unmapped.bam\t"
+                    f"UNKN\tUNKN\t"
+                    f"N\tN\n")
 
     # Header for IlluminaBasecallsToSam
     ## OUTPUT\tSAMPLE_ALIAS\tLIBRARY_NAME\tBARCODE_1\tBARCODE_2\n
     out_bts.write("OUTPUT\tSAMPLE_ALIAS\tLIBRARY_NAME\tBARCODE_1\tBARCODE_2\n")
     out_filesToMake = open(f"{o.prefix}_dirsToMake.txt", 'w')
-    out_filesToMake.write(
-            f"sam/UNKNOWN_INDEX/\n"
-            f"fastq/UNKNOWN_INDEX/\n")
+    if not o.unknown:
+        out_filesToMake.write(
+                f"sam/UNKNOWN_INDEX/\n"
+                f"fastq/UNKNOWN_INDEX/\n")
     # Open sample sheet
     in_sample_sheet = open(o.input, 'r')
     line = next(in_sample_sheet).strip().strip(',')
     sample_IDs = []
+
+    # set up to check index size
+
     while line != "[Data]":
         line = next(in_sample_sheet).strip().strip(',')
     header_line = next(in_sample_sheet).strip().strip(',').split(',')
