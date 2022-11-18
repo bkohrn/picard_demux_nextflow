@@ -82,7 +82,7 @@ def main():
         line = next(in_sample_sheet).strip().strip(',')
     header_line = next(in_sample_sheet).strip().strip(',').split(',')
     for line in in_sample_sheet:
-        line_dict = dict(zip(header_line, line.strip().strip(',').split(',')))
+        line_dict = dict(zip(header_line, line.strip().rstrip(',').split(',')))
         samp_name = re.sub(r'[^\w\d\-_\.]','_',line_dict['Sample_Name'])
         if samp_name in sample_IDs:
             raise Exception("ERROR: Duplicate sample names.  Check your 'Sample_Name' column.")
