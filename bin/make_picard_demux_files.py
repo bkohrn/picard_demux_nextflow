@@ -51,23 +51,24 @@ def main():
     ## OUTPUT_PREFIX\tlibrary_name\tbarcode_name\tBARCODE_1\tBARCODE_2\n
     out_btf.write("OUTPUT_PREFIX\tlibrary_name\tbarcode_name\tBARCODE_1\tBARCODE_2\n")
     # write unknown line
-    if not o.unknown:
+    if o.unknown == "false": 
         out_btf.write(f"fastq/UNKNOWN_INDEX/UNKNOWN_INDEX\t"
                     f"UNKN\tUNKN\t"
                     f"N\tN\n")
     # Open IlluminaBasecallsToSam file
     out_bts = open(f"{o.prefix}_bts_library_params.txt", 'w')
+    # Header for IlluminaBasecallsToSam
+    ## OUTPUT\tSAMPLE_ALIAS\tLIBRARY_NAME\tBARCODE_1\tBARCODE_2\n
+    out_bts.write("OUTPUT\tSAMPLE_ALIAS\tLIBRARY_NAME\tBARCODE_1\tBARCODE_2\n")
+
         # write unknown line
-    if not o.unknown:
+    if o.unknown == "false":
         out_bts.write(f"sam/UNKNOWN_INDEX/UNKNOWN_INDEX_unmapped.bam\t"
                     f"UNKN\tUNKN\t"
                     f"N\tN\n")
 
-    # Header for IlluminaBasecallsToSam
-    ## OUTPUT\tSAMPLE_ALIAS\tLIBRARY_NAME\tBARCODE_1\tBARCODE_2\n
-    out_bts.write("OUTPUT\tSAMPLE_ALIAS\tLIBRARY_NAME\tBARCODE_1\tBARCODE_2\n")
     out_filesToMake = open(f"{o.prefix}_dirsToMake.txt", 'w')
-    if not o.unknown:
+    if o.unknown == "false":
         out_filesToMake.write(
                 f"sam/UNKNOWN_INDEX/\n"
                 f"fastq/UNKNOWN_INDEX/\n")
@@ -85,7 +86,7 @@ def main():
         line_dict = dict(zip(header_line, line.strip().rstrip(',').split(',')))
         samp_name = re.sub(r'[^\w\d\-_\.]','_',line_dict['Sample_Name'])
         if samp_name in sample_IDs:
-            raise Exception("ERROR: Duplicate sample names.  Check your 'Sample_Name' column.")
+            raise Exception(f"ERROR: Duplicate sample name.  Check your 'Sample_Name' column.")
         sample_IDs.append(samp_name)
         out_eib.write(f"{samp_name}\t"
                       f"{line_dict['I7_Index_ID']}\t"
