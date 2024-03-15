@@ -10,5 +10,9 @@ echo ${inDirs}
 ls -alh
 
 mkdir -p merged/fastq/\${inName}
-cat \${inName}*/\${inName}.1.fastq.gz > merged/fastq/\${inName}/\${inName}.1.fastq.gz
-cat \${inName}*/\${inName}.2.fastq.gz > merged/fastq/\${inName}/\${inName}.2.fastq.gz
+dirList=(\$(ls -d \${inName}*))
+dir1=\${dirList[0]}
+for fIter in \$(ls \${dir1}/\${inName}.*.fastq.gz); do
+    fileName=\$(basename \${fIter})
+    cat \${inName}*/\${fileName} > merged/fastq/\${inName}/\${fileName}
+done
